@@ -1,0 +1,13 @@
+#!/usr/bin/env bb
+
+(def pod-dir (.getParent (clojure.java.io/file *file*)))
+
+(def cmd (str "-Sdeps '{:deps {poly/pod {:local/root " (pr-str pod-dir) "}}}' -M -m polylith.pod.core"))
+
+(def cwd (System/getProperty "user.dir"))
+
+(babashka.tasks/clojure {:dir cwd} cmd)
+
+
+
+
