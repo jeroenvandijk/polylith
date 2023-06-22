@@ -1,30 +1,30 @@
 (ns polylith.clj.core.command.core
   (:require [polylith.clj.core.change.interface :as change]
             [polylith.clj.core.command.cmd-validator.core :as cmd-validator]
-            [polylith.clj.core.command.create :as create]
-            [polylith.clj.core.command.dependencies :as dependencies]
+            #_[polylith.clj.core.command.create :as create]
+            #_[polylith.clj.core.command.dependencies :as dependencies]
             [polylith.clj.core.command.exit-code :as exit-code]
-            [polylith.clj.core.command.info :as info]
-            [polylith.clj.core.command.test :as test]
+            #_[polylith.clj.core.command.info :as info]
+            #_[polylith.clj.core.command.test :as test]
             [polylith.clj.core.command.user-config :as user-config]
             [polylith.clj.core.common.interface :as common]
             [polylith.clj.core.config-reader.interface :as config-reader]
-            [polylith.clj.core.help.interface :as help]
-            [polylith.clj.core.lib.interface :as lib]
-            [polylith.clj.core.migrator.interface :as migrator]
-            [polylith.clj.core.shell.interface :as shell]
+            #_[polylith.clj.core.help.interface :as help]
+            #_[polylith.clj.core.lib.interface :as lib]
+            #_[polylith.clj.core.migrator.interface :as migrator]
+            #_[polylith.clj.core.shell.interface :as shell]
             [polylith.clj.core.tap.interface :as tap]
-            [polylith.clj.core.util.interface.color :as color]
+            #_[polylith.clj.core.util.interface.color :as color]
             [polylith.clj.core.util.interface.time :as time-util]
-            [polylith.clj.core.validator.interface :as validator]
-            [polylith.clj.core.version.interface :as ver]
+            #_[polylith.clj.core.validator.interface :as validator]
+            #_[polylith.clj.core.version.interface :as ver]
             [polylith.clj.core.workspace-clj.interface :as ws-clj]
             [polylith.clj.core.workspace.interface :as ws]
             [polylith.clj.core.ws-file.interface :as ws-file]
-            [polylith.clj.core.ws-explorer.interface :as ws-explorer])
+            #_[polylith.clj.core.ws-explorer.interface :as ws-explorer])
   (:refer-clojure :exclude [test]))
 
-(defn check [{:keys [messages] :as workspace} color-mode]
+#_(defn check [{:keys [messages] :as workspace} color-mode]
   (if (empty? messages)
     (println (color/ok color-mode "OK"))
     (validator/print-messages workspace)))
@@ -33,16 +33,16 @@
   (doseq [file (-> workspace :changes :changed-files)]
     (println file)))
 
-(defn help [[_ cmd ent] is-all is-show-project is-show-brick is-show-workspace toolsdeps1? color-mode]
+#_(defn help [[_ cmd ent] is-all is-show-project is-show-brick is-show-workspace toolsdeps1? color-mode]
   (help/print-help cmd ent is-all is-show-project is-show-brick is-show-workspace toolsdeps1? color-mode))
 
-(defn version []
+#_(defn version []
   (println (str "  " ver/name " (" ver/date ")")))
 
 (defn unknown-command [cmd]
   (println (str "  Unknown command '" cmd "'. Type 'poly help' for help.")))
 
-(defn prompt-message []
+#_(defn prompt-message []
   (println "  Please use the 'shell' command instead, which gives you support for history (<up> key) and autocomplete (<tab> key)."))
 
 (defn read-workspace
@@ -76,26 +76,26 @@
         [cmd user-input] (with-shell cmd user-input)]
     (user-config/create-user-config-if-not-exists)
     (when is-tap (tap/execute "open"))
-    (let [brick-name (first selected-bricks)
-          project-name (first selected-projects)
-          toolsdeps1? (common/toolsdeps1? workspace)
+    (let [;brick-name (first selected-bricks)
+          ;project-name (first selected-projects)
+          ;toolsdeps1? (common/toolsdeps1? workspace)
           test-result (atom true)
           [ok? message] (cmd-validator/validate workspace user-input color-mode)]
       (if ok?
         (case cmd
-          "check" (check workspace color-mode)
-          "create" (create/create ws-dir workspace args name top-ns interface branch is-git-add is-commit color-mode)
-          "deps" (dependencies/deps workspace project-name brick-name unnamed-args is-all)
+          ;"check" (check workspace color-mode)
+          ;"create" (create/create ws-dir workspace args name top-ns interface branch is-git-add is-commit color-mode)
+          ;"deps" (dependencies/deps workspace project-name brick-name unnamed-args is-all)
           "diff" (diff workspace)
-          "help" (help args is-all is-show-project is-show-brick is-show-workspace toolsdeps1? color-mode)
-          "info" (info/info workspace unnamed-args)
-          "libs" (lib/print-lib-table workspace is-all is-outdated)
-          "migrate" (migrator/migrate ws-dir workspace)
-          "prompt" (prompt-message)
-          "shell" (shell/start execute user-input workspace-fn workspace color-mode)
-          "test" (test/run workspace unnamed-args test-result is-verbose color-mode)
-          "version" (version)
-          "ws" (ws-explorer/ws workspace get out color-mode)
+          ;"help" (help args is-all is-show-project is-show-brick is-show-workspace toolsdeps1? color-mode)
+          ;"info" (info/info workspace unnamed-args)
+          ;"libs" (lib/print-lib-table workspace is-all is-outdated)
+          ;"migrate" (migrator/migrate ws-dir workspace)
+          ;"prompt" (prompt-message)
+          ;"shell" (shell/start execute user-input workspace-fn workspace color-mode)
+          ;"test" (test/run workspace unnamed-args test-result is-verbose color-mode)
+          ;"version" (version)
+          ;"ws" (ws-explorer/ws workspace get out color-mode)
           (unknown-command cmd))
         (println message))
       (exit-code/code cmd workspace @test-result))))
