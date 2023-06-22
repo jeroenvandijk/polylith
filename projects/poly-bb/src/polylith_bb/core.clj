@@ -11,7 +11,7 @@
   (if (instance? clojure.lang.Namespace x)
     (name (ns-name x))
     (name x)))
-    
+
 (defn- resolve-alias [sym]
   ((or ;*alias-map*
        (ns-aliases *ns*)) sym))
@@ -79,8 +79,16 @@
 
 (ns polylith-bb.core
   (:require [polylith.clj.core.poly-cli.core :as core]))
-  
-(defn -main [& args]
-  (apply core/-main args))
 
 
+
+
+(defn -main [& [cmd :as args]]
+  (case cmd
+    ("shell" "test" nil)
+    ;; We can't do this (yet!) delegate to clojure process
+    ;; TODO can we also mixin the Polylith dep? E.g. "-Sdeps '{:deps {poly/pod {:local/root " (pr-str pod-dir) "}}}' -M -m polylith.pod.core"
+    (babashka.tasks/clojure (str "-M:poly " (clojure.string/join cmd)))
+
+    ;; We can do this in bb!
+    (apply core/-main args)))
