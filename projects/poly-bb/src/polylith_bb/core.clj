@@ -88,7 +88,7 @@
     ("shell" "test" nil)
     ;; We can't do this (yet!) delegate to clojure process
     ;; TODO can we also mixin the Polylith dep? E.g. "-Sdeps '{:deps {poly/pod {:local/root " (pr-str pod-dir) "}}}' -M -m polylith.pod.core"
-    (babashka.tasks/clojure (str "-M:poly " (clojure.string/join cmd)))
+	(babashka.tasks/clojure (str "-M:poly " (clojure.string/join " " args)))
 
     ;; We can do this in bb!
     (apply core/-main args)))
